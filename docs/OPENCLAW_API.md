@@ -14,9 +14,13 @@ OpenClaw는 Spring Boot Backend의 읽기 전용 뉴스 API만 호출한다. 자
 | 최신 IT 뉴스 보여줘 | `GET /api/news/latest` |
 | Codex 관련 뉴스 찾아줘 | `GET /api/news/search?keyword=Codex` |
 | 이번 주 OpenAI 뉴스 보여줘 | `GET /api/news/query?source=OpenAI&from={UTC 시작시각}` |
+| 중요도 높은 뉴스만 보여줘 | `GET /api/news/query?impact=high` |
 
 Backend 기본 주소는 환경별 설정으로 주입하며 저장소에 운영 주소나 인증정보를
 기록하지 않는다.
+
+읽기 API 보호를 활성화한 환경에서는 OpenClaw가 `X-API-Key` 헤더를 환경 변수 또는
+Secret Manager에서 주입한다. 키는 설정 파일, 프롬프트, 로그에 기록하지 않는다.
 
 ## 응답 필드
 
@@ -26,11 +30,20 @@ Backend 기본 주소는 환경별 설정으로 주입하며 저장소에 운영
 - `url`: 원문 URL
 - `published_at`: UTC 발행 시각
 - `content`: 수집된 본문 또는 요약 입력 텍스트
+- `summary`: 구조화 핵심 요약
+- `impact`: `PENDING`, `HIGH`, `MEDIUM`, `LOW` 중요도
+- `developer_view`: 개발자 관점
+- `keywords`: 기사에서 확인된 키워드
+- `related_sources`: 중복 통합 시 보존된 관련 출처
+- `collection_status`: 수집·요약 처리 상태
+- `notification_sent`: Telegram 발송 여부
 - `created_at`: UTC 저장 시각
 
 ## 오류 처리
 
 - 잘못된 검색어는 HTTP `400`과 `INVALID_REQUEST` 오류 코드를 반환한다.
+- 인증 실패는 HTTP `401`과 `UNAUTHORIZED` 오류 코드를 반환한다.
+- 분당 요청 한도 초과는 HTTP `429`와 `RATE_LIMIT_EXCEEDED` 오류 코드를 반환한다.
 - 페이지형 조회는 `size`를 최대 100으로 제한하고 필요한 페이지만 요청한다.
 - 일시적인 Backend 오류는 사용자에게 알리고 제한된 횟수만 재시도한다.
 - 빈 배열은 오류가 아니라 검색 결과 없음으로 처리한다.

@@ -62,6 +62,8 @@ public class NewsQueryController {
             @RequestParam(required = false)
             @Pattern(regexp = ".*\\S.*") @Size(max = 120) String source,
             @RequestParam(required = false)
+            @Pattern(regexp = "(?i)high|medium|low") String impact,
+            @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
@@ -81,6 +83,11 @@ public class NewsQueryController {
         if (source != null) {
             specification = specification.and((root, query, builder) ->
                     builder.equal(builder.lower(root.get("source")), source.toLowerCase(Locale.ROOT)));
+        }
+        if (impact != null) {
+            NewsImpact parsedImpact = NewsImpact.valueOf(impact.toUpperCase(Locale.ROOT));
+            specification = specification.and((root, query, builder) ->
+                    builder.equal(root.get("impact"), parsedImpact));
         }
         if (from != null) {
             specification = specification.and((root, query, builder) ->

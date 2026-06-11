@@ -7,12 +7,18 @@
 - OpenAI Chat Completions 직접 호출 Provider
 - 기사 본문을 신뢰하지 않는 데이터로 취급하는 시스템 프롬프트
 - JSON 구조 검증
+- 저장된 기사를 Worker 요약 API에 전달하는 Backend 경로
+- 요약, 중요도, 개발자 관점, 처리 상태 PostgreSQL 저장 모델
+- 요약 성공 시 `SUMMARIZED`, 실패 시 `SUMMARY_FAILED` 상태 기록
+- `POST /api/news/{articleId}/summarize` 기본 비활성화 및 `403 Forbidden`
 - AI 요약 기본 비활성화 및 `403 Forbidden`
 
 ## 검증 완료
 
 - 외부 API를 호출하지 않는 fake session 계약 테스트
 - 구조화 응답 파싱 테스트
+- Worker 요약 응답 매핑과 Backend 저장 테스트
+- Backend 요약 API 기본 비활성화 테스트
 - 기본 비활성화 API 테스트
 
 ## 남은 완료 기준

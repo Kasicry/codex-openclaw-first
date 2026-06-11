@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +36,8 @@ class CollectionServiceTest {
         article.setUrl("https://openai.com/index/codex-release/");
         article.setPublishedAt(Instant.parse("2026-06-11T00:00:00Z"));
         article.setContent("Release details");
+        article.setMatchedKeywords(Arrays.asList("Codex", "Developer"));
+        article.setRelatedSources(Arrays.asList("openai", "example"));
 
         WorkerCollectResponse response = new WorkerCollectResponse();
         response.setArticles(Collections.singletonList(article));
@@ -45,5 +48,9 @@ class CollectionServiceTest {
 
         assertThat(repository.count()).isEqualTo(1);
         assertThat(repository.findAll().get(0).getTitle()).isEqualTo("Codex release");
+        assertThat(repository.findAll().get(0).getKeywords()).containsExactly("Codex", "Developer");
+        assertThat(repository.findAll().get(0).getRelatedSources()).containsExactly("openai", "example");
+        assertThat(repository.findAll().get(0).getImpact().name()).isEqualTo("PENDING");
+        assertThat(repository.findAll().get(0).isNotificationSent()).isFalse();
     }
 }

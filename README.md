@@ -45,6 +45,7 @@ Local endpoints:
 - Latest news: `http://localhost:13510/api/news/latest`
 - Paged news query: `http://localhost:13510/api/news/query`
 - OpenAPI contract: `http://localhost:13510/openapi.yaml`
+- Approval-gated article summary: `POST http://localhost:13510/api/news/{articleId}/summarize`
 - Worker health: `http://localhost:13501/health`
 - Worker collection contract: `POST http://localhost:13501/v1/collect`
 - Worker summary contract: `POST http://localhost:13501/v1/summarize`
@@ -52,8 +53,11 @@ Local endpoints:
 
 OpenClaw 연동은 [읽기 전용 API 계약](docs/OPENCLAW_API.md)을 따릅니다.
 
+읽기 API 보호는 `READ_API_PROTECTION_ENABLED=true`와 `READ_API_KEY` 설정 후 활성화됩니다.
+활성화 시 요청에 `X-API-Key` 헤더가 필요하며 기본 분당 한도는 60회입니다.
+
 Actual crawling, database writes, and Telegram delivery remain disabled until explicitly configured and approved.
 
 The Worker recognizes `openai`, `anthropic`, and `google-ai`, but external collection remains
 blocked while `COLLECT_EXTERNAL_ENABLED=false`. AI summary and Telegram delivery are also disabled
-by default.
+by default. Backend summary persistence additionally requires `SUMMARY_OPERATION_ENABLED=true`.

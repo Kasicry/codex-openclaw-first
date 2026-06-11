@@ -15,6 +15,12 @@ spring:
 worker:
   base-url: http://localhost:13501
 
+api:
+  read-protection-enabled: false
+  read-key:
+  requests-per-minute: 60
+
 operations:
   collect-enabled: false
+  summary-enabled: false
   telegram-send-enabled: false

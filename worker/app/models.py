@@ -15,6 +15,7 @@ class Article(BaseModel):
     url: HttpUrl
     published_at: datetime | None = None
     content: str = ""
+    matched_keywords: list[str] = Field(default_factory=list)
     related_sources: list[str] = Field(default_factory=list)
 
 

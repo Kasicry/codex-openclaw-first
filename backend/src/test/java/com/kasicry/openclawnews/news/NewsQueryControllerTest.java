@@ -60,6 +60,7 @@ class NewsQueryControllerTest {
         mockMvc.perform(get("/api/news/query")
                         .param("keyword", "Codex")
                         .param("source", "OpenAI")
+                        .param("impact", "high")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -88,6 +89,13 @@ class NewsQueryControllerTest {
     @Test
     void queryRejectsInvalidDateFormatWithConsistentError() throws Exception {
         mockMvc.perform(get("/api/news/query").param("from", "not-a-date"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_REQUEST"));
+    }
+
+    @Test
+    void queryRejectsUnknownImpact() throws Exception {
+        mockMvc.perform(get("/api/news/query").param("impact", "critical"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_REQUEST"));
     }

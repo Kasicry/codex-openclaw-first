@@ -5,6 +5,8 @@ info:
   description: Read-only news API and approval-gated operation endpoints.
 servers:
   - url: /
+security:
+  - ReadApiKey: []
 paths:
   /api/news/latest:
     get:
@@ -60,6 +62,14 @@ paths:
             type: string
             maxLength: 120
         - in: query
+          name: impact
+          schema:
+            type: string
+            enum:
+              - high
+              - medium
+              - low
+        - in: query
           name: from
           schema:
             type: string
@@ -94,20 +104,49 @@ paths:
   /api/news/collect:
     post:
       summary: Start collection when explicitly enabled and approved
+      security: []
       responses:
         "200":
           description: Collection result
         "403":
           description: Collection operation is disabled
+  /api/news/{articleId}/summarize:
+    post:
+      summary: Summarize a stored article when explicitly enabled and approved
+      security: []
+      parameters:
+        - in: path
+          name: articleId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Summarized article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsArticle"
+        "403":
+          description: Summary operation is disabled
+        "404":
+          description: News article not found
   /api/briefing/send:
     post:
       summary: Send a briefing when explicitly enabled and approved
+      security: []
       responses:
         "200":
           description: Briefing sent
         "403":
           description: Telegram delivery is disabled
 components:
+  securitySchemes:
+    ReadApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
   responses:
     InvalidRequest:
       description: Invalid request
@@ -142,6 +181,35 @@ components:
         content:
           type: string
           nullable: true
+        summary:
+          type: string
+          nullable: true
+        impact:
+          type: string
+          enum:
+            - PENDING
+            - HIGH
+            - MEDIUM
+            - LOW
+        developer_view:
+          type: string
+          nullable: true
+        collection_status:
+          type: string
+          enum:
+            - COLLECTED
+            - SUMMARIZED
+            - SUMMARY_FAILED
+        notification_sent:
+          type: boolean
+        keywords:
+          type: array
+          items:
+            type: string
+        related_sources:
+          type: array
+          items:
+            type: string
         created_at:
           type: string
           format: date-time

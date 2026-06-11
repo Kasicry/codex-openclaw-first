@@ -21,8 +21,14 @@ management:
 worker:
   base-url: ${WORKER_BASE_URL:http://localhost:13501}
 
+api:
+  read-protection-enabled: ${READ_API_PROTECTION_ENABLED:false}
+  read-key: ${READ_API_KEY:}
+  requests-per-minute: ${READ_API_REQUESTS_PER_MINUTE:60}
+
 operations:
   collect-enabled: ${COLLECT_OPERATION_ENABLED:false}
+  summary-enabled: ${SUMMARY_OPERATION_ENABLED:false}
   telegram-send-enabled: ${TELEGRAM_SEND_ENABLED:false}
 
 telegram:

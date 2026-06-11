@@ -49,6 +49,8 @@ public class WorkerCollectResponse {
         private String url;
         private Instant publishedAt;
         private String content;
+        private List<String> matchedKeywords = new ArrayList<String>();
+        private List<String> relatedSources = new ArrayList<String>();
 
         public String getSource() {
             return source;
@@ -88,6 +90,22 @@ public class WorkerCollectResponse {
 
         public void setContent(String content) {
             this.content = content;
+        }
+
+        public List<String> getMatchedKeywords() {
+            return matchedKeywords;
+        }
+
+        public void setMatchedKeywords(List<String> matchedKeywords) {
+            this.matchedKeywords = matchedKeywords;
+        }
+
+        public List<String> getRelatedSources() {
+            return relatedSources;
+        }
+
+        public void setRelatedSources(List<String> relatedSources) {
+            this.relatedSources = relatedSources;
         }
     }
 

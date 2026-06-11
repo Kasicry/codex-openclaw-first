@@ -22,4 +22,12 @@ public class WorkerClient {
                 WorkerCollectResponse.class
         );
     }
+
+    public WorkerSummaryResponse summarize(WorkerSummaryRequest request) {
+        return restTemplate.postForObject(
+                workerBaseUrl + "/v1/summarize",
+                request,
+                WorkerSummaryResponse.class
+        );
+    }
 }

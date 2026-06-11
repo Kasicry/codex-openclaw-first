@@ -38,7 +38,15 @@ class CollectionCoordinator:
                 collected = collector(keywords)
                 for article in collected:
                     normalized_url = normalize_url(str(article.url))
-                    collected_articles.append(article.model_copy(update={"url": normalized_url}))
+                    matched_keywords = _matched_keywords(article, keywords)
+                    collected_articles.append(
+                        article.model_copy(
+                            update={
+                                "url": normalized_url,
+                                "matched_keywords": matched_keywords,
+                            }
+                        )
+                    )
                 source_results.append(
                     SourceResult(
                         source=source,
@@ -81,3 +89,8 @@ class CollectionCoordinator:
 
 def _elapsed_ms(started_at: float) -> int:
     return max(0, round((perf_counter() - started_at) * 1000))
+
+
+def _matched_keywords(article: Article, keywords: list[str]) -> list[str]:
+    searchable = f"{article.title} {article.content}".casefold()
+    return sorted({keyword for keyword in keywords if keyword.casefold() in searchable})

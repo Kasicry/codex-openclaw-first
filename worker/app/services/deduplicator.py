@@ -34,8 +34,17 @@ def deduplicate_articles(
                 *article.related_sources,
             }
         )
+        matched_keywords = sorted(
+            {
+                *representative.matched_keywords,
+                *article.matched_keywords,
+            }
+        )
         representatives[duplicate_index] = representative.model_copy(
-            update={"related_sources": related_sources}
+            update={
+                "matched_keywords": matched_keywords,
+                "related_sources": related_sources,
+            }
         )
         duplicate_count += 1
 

@@ -33,7 +33,9 @@ public class CollectionService {
                     article.getTitle(),
                     article.getUrl(),
                     article.getPublishedAt(),
-                    article.getContent()
+                    article.getContent(),
+                    article.getMatchedKeywords(),
+                    article.getRelatedSources()
             ));
         }
 

@@ -8,11 +8,13 @@ def test_similar_titles_are_grouped_and_sources_are_preserved() -> None:
             source="openai",
             title="OpenAI releases Codex update",
             url="https://openai.com/codex-update",
+            matched_keywords=["Codex"],
         ),
         Article(
             source="example",
             title="OpenAI releases Codex update!",
             url="https://example.com/openai-codex-update",
+            matched_keywords=["AI"],
         ),
     ]
 
@@ -21,6 +23,7 @@ def test_similar_titles_are_grouped_and_sources_are_preserved() -> None:
     assert len(representatives) == 1
     assert duplicate_count == 1
     assert representatives[0].source == "openai"
+    assert representatives[0].matched_keywords == ["AI", "Codex"]
     assert representatives[0].related_sources == ["example", "openai"]
 
 
