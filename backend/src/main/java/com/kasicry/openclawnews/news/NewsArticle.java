@@ -171,4 +171,8 @@ public class NewsArticle {
     public void markSummaryFailed() {
         this.collectionStatus = CollectionStatus.SUMMARY_FAILED;
     }
+
+    public void markNotificationSent() {
+        this.notificationSent = true;
+    }
 }

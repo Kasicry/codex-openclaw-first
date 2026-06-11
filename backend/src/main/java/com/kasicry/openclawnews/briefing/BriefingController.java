@@ -14,14 +14,14 @@ import javax.validation.Valid;
 @RequestMapping("/api/briefing")
 public class BriefingController {
 
-    private final TelegramClient telegramClient;
+    private final TelegramSendService telegramSendService;
     private final boolean sendEnabled;
 
     public BriefingController(
-            TelegramClient telegramClient,
+            TelegramSendService telegramSendService,
             @Value("${operations.telegram-send-enabled:false}") boolean sendEnabled
     ) {
-        this.telegramClient = telegramClient;
+        this.telegramSendService = telegramSendService;
         this.sendEnabled = sendEnabled;
     }
 
@@ -33,6 +33,6 @@ public class BriefingController {
                     "Telegram send requires explicit approval and configuration"
             );
         }
-        telegramClient.send(request.getText());
+        telegramSendService.send(request.getText());
     }
 }

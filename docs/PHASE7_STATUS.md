@@ -8,6 +8,7 @@
 - Flyway 기반 PostgreSQL schema version 관리
 - GitHub Actions 기반 Java·Python·Compose 검증
 - 외부 수집·AI 요약·Telegram 발송 기본 비활성화
+- Telegram Scheduler 기본 비활성화 및 발송 상태 기반 중복 방지
 - 프로세스 단위 읽기 API 요청 제한
 
 ## 검증 완료

@@ -47,8 +47,12 @@ services:
       COLLECT_OPERATION_ENABLED: "false"
       SUMMARY_OPERATION_ENABLED: "false"
       TELEGRAM_SEND_ENABLED: "false"
+      SCHEDULE_ENABLED: "false"
+      BRIEFING_CRON: ${BRIEFING_CRON:-0 0 8 * * *}
+      BRIEFING_ZONE: ${BRIEFING_ZONE:-Asia/Seoul}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      TELEGRAM_MAX_ATTEMPTS: ${TELEGRAM_MAX_ATTEMPTS:-3}
     depends_on:
       postgres:
         condition: service_healthy

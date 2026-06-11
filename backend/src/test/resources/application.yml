@@ -24,3 +24,6 @@ operations:
   collect-enabled: false
   summary-enabled: false
   telegram-send-enabled: false
+  schedule-enabled: false
+  briefing-cron: 0 0 8 * * *
+  briefing-zone: Asia/Seoul

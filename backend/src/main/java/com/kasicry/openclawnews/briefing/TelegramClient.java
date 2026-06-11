@@ -14,15 +14,18 @@ public class TelegramClient {
     private final RestTemplate restTemplate;
     private final String botToken;
     private final String chatId;
+    private final int maxAttempts;
 
     public TelegramClient(
             RestTemplate restTemplate,
             @Value("${telegram.bot-token:}") String botToken,
-            @Value("${telegram.chat-id:}") String chatId
+            @Value("${telegram.chat-id:}") String chatId,
+            @Value("${telegram.max-attempts:3}") int maxAttempts
     ) {
         this.restTemplate = restTemplate;
         this.botToken = botToken;
         this.chatId = chatId;
+        this.maxAttempts = Math.max(1, maxAttempts);
     }
 
     public void send(String text) {
@@ -33,14 +36,19 @@ public class TelegramClient {
         Map<String, String> payload = new HashMap<String, String>();
         payload.put("chat_id", chatId);
         payload.put("text", text);
-        try {
-            restTemplate.postForObject(
-                    "https://api.telegram.org/bot" + botToken + "/sendMessage",
-                    payload,
-                    String.class
-            );
-        } catch (RestClientException exception) {
-            throw new IllegalStateException("Telegram send failed");
+        RestClientException lastException = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                restTemplate.postForObject(
+                        "https://api.telegram.org/bot" + botToken + "/sendMessage",
+                        payload,
+                        String.class
+                );
+                return;
+            } catch (RestClientException exception) {
+                lastException = exception;
+            }
         }
+        throw new IllegalStateException("Telegram send failed after retries", lastException);
     }
 }

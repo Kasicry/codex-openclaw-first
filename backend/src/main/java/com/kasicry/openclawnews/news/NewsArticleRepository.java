@@ -15,5 +15,10 @@ public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long>,
 
     List<NewsArticle> findByPublishedAtBetweenOrderByPublishedAtDesc(Instant from, Instant to);
 
+    List<NewsArticle> findByPublishedAtBetweenAndNotificationSentFalseOrderByPublishedAtDesc(
+            Instant from,
+            Instant to
+    );
+
     List<NewsArticle> findByTitleContainingIgnoreCaseOrderByPublishedAtDesc(String keyword);
 }

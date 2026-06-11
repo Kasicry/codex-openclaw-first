@@ -61,3 +61,6 @@ Actual crawling, database writes, and Telegram delivery remain disabled until ex
 The Worker recognizes `openai`, `anthropic`, and `google-ai`, but external collection remains
 blocked while `COLLECT_EXTERNAL_ENABLED=false`. AI summary and Telegram delivery are also disabled
 by default. Backend summary persistence additionally requires `SUMMARY_OPERATION_ENABLED=true`.
+Scheduled daily briefings require both `SCHEDULE_ENABLED=true` and
+`TELEGRAM_SEND_ENABLED=true`. The default schedule is 08:00 in `Asia/Seoul`, configured with
+`BRIEFING_CRON` and `BRIEFING_ZONE`.

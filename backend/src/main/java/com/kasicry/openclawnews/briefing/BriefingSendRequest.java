@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 public class BriefingSendRequest {
 
     @NotBlank
-    @Size(max = 4000)
+    @Size(max = 20000)
     private String text;
 
     public String getText() {

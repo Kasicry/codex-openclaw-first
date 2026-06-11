@@ -17,7 +17,7 @@ class BriefingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TelegramClient telegramClient;
+    private TelegramSendService telegramSendService;
 
     @Test
     void telegramSendIsForbiddenByDefault() throws Exception {
