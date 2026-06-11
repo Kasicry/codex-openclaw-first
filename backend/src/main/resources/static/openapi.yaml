@@ -141,6 +141,31 @@ paths:
           description: Briefing sent
         "403":
           description: Telegram delivery is disabled
+  /api/briefing/preview/today:
+    get:
+      summary: Preview today's unsent briefing without delivery
+      responses:
+        "200":
+          description: Generated briefing preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BriefingPreview"
+        "401":
+          description: Valid read API key required when protection is enabled
+  /api/briefing/send/today:
+    post:
+      summary: Generate and send today's unsent briefing when explicitly enabled and approved
+      security: []
+      responses:
+        "200":
+          description: Generated briefing sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BriefingSendResult"
+        "403":
+          description: Telegram delivery is disabled
 components:
   securitySchemes:
     ReadApiKey:
@@ -228,6 +253,27 @@ components:
         number:
           type: integer
         size:
+          type: integer
+    BriefingPreview:
+      type: object
+      required:
+        - date
+        - article_count
+        - text
+      properties:
+        date:
+          type: string
+          format: date
+        article_count:
+          type: integer
+        text:
+          type: string
+    BriefingSendResult:
+      type: object
+      required:
+        - sent_article_count
+      properties:
+        sent_article_count:
           type: integer
     ApiError:
       type: object

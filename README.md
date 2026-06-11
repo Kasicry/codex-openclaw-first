@@ -47,6 +47,8 @@ Local endpoints:
 - Paged news query: `http://localhost:13510/api/news/query`
 - OpenAPI contract: `http://localhost:13510/openapi.yaml`
 - Approval-gated article summary: `POST http://localhost:13510/api/news/{articleId}/summarize`
+- Daily briefing preview: `GET http://localhost:13510/api/briefing/preview/today`
+- Approval-gated generated briefing send: `POST http://localhost:13510/api/briefing/send/today`
 - Worker health: `http://localhost:13501/health`
 - Worker collection contract: `POST http://localhost:13501/v1/collect`
 - Worker summary contract: `POST http://localhost:13501/v1/summarize`

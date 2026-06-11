@@ -122,4 +122,36 @@ class DailyBriefingServiceTest {
                 anyLong()
         );
     }
+
+    @Test
+    void previewsUnsentArticlesWithoutDeliveryOrStateChange() {
+        NewsArticleRepository repository = mock(NewsArticleRepository.class);
+        TelegramSendService telegramSendService = mock(TelegramSendService.class);
+        OperationalMetrics metrics = mock(OperationalMetrics.class);
+        NewsArticle article = new NewsArticle(
+                "openai",
+                "Codex release",
+                "https://example.com/codex",
+                Instant.parse("2026-06-12T00:00:00Z"),
+                "Release details"
+        );
+        when(repository.findByPublishedAtBetweenAndNotificationSentFalseOrderByPublishedAtDesc(
+                any(Instant.class),
+                any(Instant.class)
+        )).thenReturn(Collections.singletonList(article));
+        DailyBriefingService service = new DailyBriefingService(
+                repository,
+                telegramSendService,
+                metrics,
+                "Asia/Seoul"
+        );
+
+        BriefingPreview preview = service.previewToday();
+
+        assertThat(preview.getArticleCount()).isEqualTo(1);
+        assertThat(preview.getText()).contains("Codex release", "https://example.com/codex");
+        assertThat(article.isNotificationSent()).isFalse();
+        verify(telegramSendService, never()).send(any(String.class));
+        verify(repository, never()).saveAll(any());
+    }
 }

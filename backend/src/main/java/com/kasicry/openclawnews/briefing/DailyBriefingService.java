@@ -34,13 +34,7 @@ public class DailyBriefingService {
     public int sendToday() {
         long startedAt = System.nanoTime();
         LocalDate today = LocalDate.now(briefingZone);
-        Instant from = today.atStartOfDay(briefingZone).toInstant();
-        Instant to = today.plusDays(1).atStartOfDay(briefingZone).toInstant();
-        List<NewsArticle> articles =
-                repository.findByPublishedAtBetweenAndNotificationSentFalseOrderByPublishedAtDesc(
-                        from,
-                        to
-                );
+        List<NewsArticle> articles = findUnsentArticles(today);
         if (articles.isEmpty()) {
             metrics.recordBriefing("skipped", 0, 0, elapsedSince(startedAt));
             return 0;
@@ -65,8 +59,23 @@ public class DailyBriefingService {
         }
     }
 
+    public BriefingPreview previewToday() {
+        LocalDate today = LocalDate.now(briefingZone);
+        List<NewsArticle> articles = findUnsentArticles(today);
+        return new BriefingPreview(today, articles.size(), format(today, articles));
+    }
+
     private long elapsedSince(long startedAt) {
         return System.nanoTime() - startedAt;
+    }
+
+    private List<NewsArticle> findUnsentArticles(LocalDate date) {
+        Instant from = date.atStartOfDay(briefingZone).toInstant();
+        Instant to = date.plusDays(1).atStartOfDay(briefingZone).toInstant();
+        return repository.findByPublishedAtBetweenAndNotificationSentFalseOrderByPublishedAtDesc(
+                from,
+                to
+        );
     }
 
     private String format(LocalDate date, List<NewsArticle> articles) {

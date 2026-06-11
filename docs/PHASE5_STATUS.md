@@ -13,6 +13,7 @@
 - `GET /openapi.yaml` OpenAPI 3.0 명세 제공
 - 읽기 전용 API와 승인 필수 실행 API 분리
 - 선택적 `X-API-Key` 읽기 API 인증
+- 일일 브리핑 미리보기 읽기 API 보호
 - 상수 시간 API Key 비교와 키 미설정 시 fail-closed 처리
 - 프로세스 단위 분당 읽기 요청 제한과 `429 RATE_LIMIT_EXCEEDED`
 

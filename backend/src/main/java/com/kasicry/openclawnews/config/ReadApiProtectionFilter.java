@@ -62,7 +62,14 @@ public class ReadApiProtectionFilter extends OncePerRequestFilter {
         String requestUri = request.getRequestURI();
         return !enabled
                 || !"GET".equalsIgnoreCase(request.getMethod())
-                || !(requestUri.equals("/api/news") || requestUri.startsWith("/api/news/"));
+                || !isProtectedReadPath(requestUri);
+    }
+
+    private boolean isProtectedReadPath(String requestUri) {
+        return requestUri.equals("/api/news")
+                || requestUri.startsWith("/api/news/")
+                || requestUri.equals("/api/briefing/preview")
+                || requestUri.startsWith("/api/briefing/preview/");
     }
 
     @Override

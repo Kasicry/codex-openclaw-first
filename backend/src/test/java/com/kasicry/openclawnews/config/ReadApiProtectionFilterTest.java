@@ -72,6 +72,24 @@ class ReadApiProtectionFilterTest {
         assertThat(response.getStatus()).isEqualTo(200);
     }
 
+    @Test
+    void protectsBriefingPreview() throws Exception {
+        ReadApiProtectionFilter filter = new ReadApiProtectionFilter(
+                objectMapper,
+                clock,
+                true,
+                "test-only-key",
+                60
+        );
+        MockHttpServletRequest request =
+                new MockHttpServletRequest("GET", "/api/briefing/preview/today");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, new MockFilterChain());
+
+        assertThat(response.getStatus()).isEqualTo(401);
+    }
+
     private MockHttpServletRequest authorizedReadRequest() {
         MockHttpServletRequest request = readRequest();
         request.addHeader("X-API-Key", "test-only-key");

@@ -25,6 +25,12 @@ class OpenClawNewsApplicationTests {
     void servesOpenApiContract() throws Exception {
         mockMvc.perform(get("/openapi.yaml"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("application/yaml"));
+                .andExpect(content().contentTypeCompatibleWith("application/yaml"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "/api/briefing/preview/today:"
+                )))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "/api/briefing/send/today:"
+                )));
     }
 }
