@@ -43,6 +43,8 @@ Local endpoints:
 
 - Backend health: `http://localhost:13510/actuator/health`
 - Latest news: `http://localhost:13510/api/news/latest`
+- Paged news query: `http://localhost:13510/api/news/query`
+- OpenAPI contract: `http://localhost:13510/openapi.yaml`
 - Worker health: `http://localhost:13501/health`
 - Worker collection contract: `POST http://localhost:13501/v1/collect`
 - Worker summary contract: `POST http://localhost:13501/v1/summarize`

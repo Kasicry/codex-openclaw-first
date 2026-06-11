@@ -1,11 +1,13 @@
 package com.kasicry.openclawnews.news;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.time.Instant;
 import java.util.List;
 
-public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> {
+public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long>,
+        JpaSpecificationExecutor<NewsArticle> {
 
     boolean existsByUrl(String url);
 

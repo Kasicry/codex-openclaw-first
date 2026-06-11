@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: OpenClaw News API
+  version: 0.1.0
+  description: Read-only news API and approval-gated operation endpoints.
+servers:
+  - url: /
+paths:
+  /api/news/latest:
+    get:
+      summary: Get the latest news articles
+      responses:
+        "200":
+          description: Latest articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NewsArticle"
+  /api/news/today:
+    get:
+      summary: Get articles published today in UTC
+      responses:
+        "200":
+          description: Today's articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NewsArticle"
+  /api/news/search:
+    get:
+      summary: Search article titles
+      parameters:
+        - in: query
+          name: keyword
+          required: true
+          schema:
+            type: string
+            maxLength: 100
+      responses:
+        "200":
+          description: Matching articles
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+  /api/news/query:
+    get:
+      summary: Query articles with filters and pagination
+      parameters:
+        - in: query
+          name: keyword
+          schema:
+            type: string
+            maxLength: 100
+        - in: query
+          name: source
+          schema:
+            type: string
+            maxLength: 120
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Paged matching articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsPage"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+  /api/news/collect:
+    post:
+      summary: Start collection when explicitly enabled and approved
+      responses:
+        "200":
+          description: Collection result
+        "403":
+          description: Collection operation is disabled
+  /api/briefing/send:
+    post:
+      summary: Send a briefing when explicitly enabled and approved
+      responses:
+        "200":
+          description: Briefing sent
+        "403":
+          description: Telegram delivery is disabled
+components:
+  responses:
+    InvalidRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+  schemas:
+    NewsArticle:
+      type: object
+      required:
+        - id
+        - source
+        - title
+        - url
+        - created_at
+      properties:
+        id:
+          type: integer
+          format: int64
+        source:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    NewsPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsArticle"
+        total_elements:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time

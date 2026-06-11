@@ -13,6 +13,7 @@ OpenClaw는 Spring Boot Backend의 읽기 전용 뉴스 API만 호출한다. 자
 | 오늘 AI 뉴스 요약해줘 | `GET /api/news/today` |
 | 최신 IT 뉴스 보여줘 | `GET /api/news/latest` |
 | Codex 관련 뉴스 찾아줘 | `GET /api/news/search?keyword=Codex` |
+| 이번 주 OpenAI 뉴스 보여줘 | `GET /api/news/query?source=OpenAI&from={UTC 시작시각}` |
 
 Backend 기본 주소는 환경별 설정으로 주입하며 저장소에 운영 주소나 인증정보를
 기록하지 않는다.
@@ -30,6 +31,7 @@ Backend 기본 주소는 환경별 설정으로 주입하며 저장소에 운영
 ## 오류 처리
 
 - 잘못된 검색어는 HTTP `400`과 `INVALID_REQUEST` 오류 코드를 반환한다.
+- 페이지형 조회는 `size`를 최대 100으로 제한하고 필요한 페이지만 요청한다.
 - 일시적인 Backend 오류는 사용자에게 알리고 제한된 횟수만 재시도한다.
 - 빈 배열은 오류가 아니라 검색 결과 없음으로 처리한다.
 
@@ -48,3 +50,5 @@ Backend 기본 주소는 환경별 설정으로 주입하며 저장소에 운영
 3. `GET /api/news/search?keyword=Codex`가 검색 결과를 반환하는지 확인한다.
 4. 공백 검색어가 HTTP `400`과 `INVALID_REQUEST`를 반환하는지 확인한다.
 5. OpenClaw 설정에 쓰기 API 도구가 노출되지 않았는지 확인한다.
+
+전체 HTTP 계약은 Backend의 `GET /openapi.yaml`에서 확인한다.
