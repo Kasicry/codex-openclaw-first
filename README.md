@@ -42,6 +42,7 @@ docker compose config
 Local endpoints:
 
 - Backend health: `http://localhost:13510/actuator/health`
+- Backend metrics: `http://localhost:13510/actuator/metrics`
 - Latest news: `http://localhost:13510/api/news/latest`
 - Paged news query: `http://localhost:13510/api/news/query`
 - OpenAPI contract: `http://localhost:13510/openapi.yaml`
@@ -64,3 +65,6 @@ by default. Backend summary persistence additionally requires `SUMMARY_OPERATION
 Scheduled daily briefings require both `SCHEDULE_ENABLED=true` and
 `TELEGRAM_SEND_ENABLED=true`. The default schedule is 08:00 in `Asia/Seoul`, configured with
 `BRIEFING_CRON` and `BRIEFING_ZONE`.
+
+운영 지표, 초기 경보 기준, 재처리 및 복구 절차는 [운영 가이드](docs/OPERATIONS.md)를
+따릅니다.

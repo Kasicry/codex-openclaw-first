@@ -12,6 +12,12 @@ spring:
   flyway:
     enabled: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
 worker:
   base-url: http://localhost:13501
 
