@@ -87,7 +87,7 @@ ________________________________________
 다른 사이트 수집 계속 진행
 ________________________________________
 보안
-SECURITY.md 준수
+[SECURITY.md](./SECURITY.md) 준수
 •	비밀키 저장 금지
 •	승인 없는 외부 실행 금지
 ________________________________________
@@ -153,3 +153,138 @@ ________________________________________
 •	유료 뉴스 크롤링
 •	실시간 스트리밍 수집
 은 구현하지 않는다.
+________________________________________
+
+기술 스택
+전체 구조
+본 프로젝트는 Spring Boot를 중심 서버로 사용하고, Python은 크롤링 및 AI 요약 전용 워커로 사용한다.
+Spring Boot는 API, 인증, 데이터 저장, OpenClaw 연동, 알림 발송을 담당한다.
+Python Worker는 IT 뉴스 수집, 본문 추출, AI 요약, 키워드 분석을 담당한다.
+________________________________________
+Backend Core
+•	Java 8
+•	Spring Boot 2.7.x
+•	Spring Web
+•	Spring Validation
+•	Spring Scheduler
+•	Spring Data JPA 또는 MyBatis
+역할:
+•	REST API 제공
+•	뉴스 데이터 저장/조회
+•	작업 실행 요청 관리
+•	OpenClaw 연동 API 제공
+•	Telegram 알림 발송
+•	AD, EAI, Guacamole, DB 모니터링 확장 시 중심 서버 역할
+________________________________________
+AI / Crawling Worker
+•	Python 3.12
+•	requests
+•	BeautifulSoup4
+•	Playwright
+•	OpenAI API 또는 호환 LLM API
+역할:
+•	IT 뉴스 사이트 크롤링
+•	기사 본문 추출
+•	중복 후보 탐지
+•	AI 요약 생성
+•	중요도 분류
+•	개발자 관점 코멘트 생성
+________________________________________
+Communication
+Spring Boot와 Python Worker는 REST API 방식으로 연동한다.
+초기 방식:
+•	Spring Boot → Python Worker 호출
+•	Python Worker → 수집/요약 결과 반환
+•	Spring Boot → 결과 저장
+향후 확장:
+•	메시지 큐 기반 비동기 처리 검토
+•	Redis Queue 또는 RabbitMQ 검토
+________________________________________
+Storage
+초기:
+•	PostgreSQL
+주요 저장 데이터:
+•	뉴스 원문 메타데이터
+•	기사 URL
+•	제목
+•	발행일
+•	출처
+•	요약
+•	중요도
+•	키워드
+•	수집 상태
+•	알림 발송 여부
+개발 테스트용:
+•	H2 또는 SQLite 선택 가능
+________________________________________
+Scheduler
+초기:
+•	Spring Scheduler
+역할:
+•	매일 정해진 시간 뉴스 수집 요청
+•	실패 작업 재시도
+•	알림 발송 트리거
+향후:
+•	Quartz Scheduler 검토
+________________________________________
+Notification
+•	Telegram Bot API
+역할:
+•	일일 IT 뉴스 브리핑 발송
+•	중요도 높은 뉴스 즉시 알림
+•	OpenClaw 연동 전 임시 인터페이스 역할
+________________________________________
+OpenClaw Integration
+OpenClaw는 Spring Boot API를 호출하는 방식으로 연동한다.
+예시 API:
+•	GET /api/news/today
+•	GET /api/news/latest
+•	GET /api/news/search?keyword=codex
+•	POST /api/news/collect
+•	POST /api/briefing/send
+OpenClaw 예시 명령:
+•	오늘 AI 뉴스 요약해줘
+•	이번 주 OpenAI 뉴스 보여줘
+•	Codex 관련 뉴스만 찾아줘
+•	중요도 높은 뉴스만 브리핑해줘
+________________________________________
+Future Monitoring Integration
+향후 Spring Boot 중심 서버에 다음 모듈을 추가한다.
+AD Monitoring
+•	LDAP 조회
+•	인증서 만료일 확인
+•	계정 잠금 상태 확인
+EAI Monitoring
+•	API Listener 이벤트 수신
+•	실패 로그 수집
+•	재처리 대상 조회
+Guacamole Monitoring
+•	접속 이력 조회
+•	현재 접속자 조회
+•	비정상 접속 패턴 탐지
+DB Monitoring
+•	PostgreSQL 세션 조회
+•	Oracle 세션 조회
+•	Lock 확인
+•	장시간 실행 쿼리 조회
+________________________________________
+Security
+•	[SECURITY.md](./SECURITY.md) 정책 준수
+•	기본 계정은 조회 전용 권한 사용
+•	DB 변경 작업은 사용자 승인 후 수행
+•	운영 서버 명령 실행은 사용자 승인 후 수행
+•	API Key, Token, Password는 환경변수 또는 Secret Manager로 관리
+•	로그에는 비밀정보와 개인정보를 마스킹한다
+________________________________________
+Deployment
+초기:
+•	Docker Compose
+구성:
+•	Spring Boot App
+•	Python Worker
+•	PostgreSQL
+향후:
+•	운영 환경 분리
+•	내부망 배포
+•	Reverse Proxy 적용
+•	OpenClaw 연동 컨테이너 추가

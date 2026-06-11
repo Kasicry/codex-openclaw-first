@@ -1,0 +1,20 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:h2:mem:openclaw_news;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+worker:
+  base-url: http://localhost:13501
+
+operations:
+  collect-enabled: false
+  telegram-send-enabled: false

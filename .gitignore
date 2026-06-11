@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Java / Maven
+backend/target/
+
+# Environment and secrets
+.env
+*.local
+
+# Runtime output
+/news/
+/runtime/logs/
+*.log
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

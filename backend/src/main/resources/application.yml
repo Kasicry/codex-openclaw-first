@@ -1,0 +1,30 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:13532/openclaw_news}
+    username: ${SPRING_DATASOURCE_USERNAME:openclaw_app}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+worker:
+  base-url: ${WORKER_BASE_URL:http://localhost:13501}
+
+operations:
+  collect-enabled: ${COLLECT_OPERATION_ENABLED:false}
+  telegram-send-enabled: ${TELEGRAM_SEND_ENABLED:false}
+
+telegram:
+  bot-token: ${TELEGRAM_BOT_TOKEN:}
+  chat-id: ${TELEGRAM_CHAT_ID:}
