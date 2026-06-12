@@ -76,6 +76,31 @@ Actuator는 내부망 또는 관리용 Reverse Proxy 뒤에서만 노출한다. 
 - 애플리케이션 로그는 30일, 지표 추세는 90일 보존을 초기값으로 사용한다.
 - 삭제, 복구, 보존 기간 변경은 DB 수정 또는 운영 작업이므로 사전 승인이 필요하다.
 
+### 별도 DB 복구 연습
+
+`scripts/postgres-restore-drill.ps1`은 Docker Compose PostgreSQL의 논리 백업을 별도
+`*_restore_drill` DB에 복구하고 다음 값을 원본과 비교한 뒤 연습 DB와 임시 dump를
+정리한다.
+
+- 기사 수
+- 기사 키워드 수
+- 관련 출처 수
+- 최신 발행일
+- 최근 성공 Flyway 버전
+
+스크립트는 기존 복구 연습 DB가 있으면 중단하고 원본과 같은 DB 이름을 허용하지
+않는다. 별도 DB 생성·복구·삭제와 임시 dump 삭제가 포함되므로 실행 전 승인이
+필요하다.
+
+```powershell
+$env:POSTGRES_PASSWORD='local-only-password'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\postgres-restore-drill.ps1
+```
+
+성공 출력의 `fingerprint`에는 위 다섯 값만 포함되며 기사 본문, URL, 비밀정보는
+포함하지 않는다. 실패 시 원본 DB는 수정하지 않고 생성한 연습 DB와 임시 dump만
+정리한다.
+
 ## 확장 판단 기준
 
 - Backend 인스턴스가 2개 이상이면 현재 프로세스 단위 요청 제한을 Redis 기반 공유

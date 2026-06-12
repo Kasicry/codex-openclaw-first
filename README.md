@@ -39,6 +39,13 @@ $env:POSTGRES_PASSWORD='local-only-password'
 docker compose config
 ```
 
+승인 기반 PostgreSQL 별도 DB 복구 연습:
+
+```powershell
+$env:POSTGRES_PASSWORD='local-only-password'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\postgres-restore-drill.ps1
+```
+
 Local endpoints:
 
 - Backend health: `http://localhost:13510/actuator/health`
