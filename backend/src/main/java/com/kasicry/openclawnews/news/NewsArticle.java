@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -92,7 +93,7 @@ public class NewsArticle {
             Collection<String> keywords,
             Collection<String> relatedSources
     ) {
-        this.source = source;
+        this.source = normalizeSource(source);
         this.title = title;
         this.url = url;
         this.publishedAt = publishedAt;
@@ -174,5 +175,9 @@ public class NewsArticle {
 
     public void markNotificationSent() {
         this.notificationSent = true;
+    }
+
+    private String normalizeSource(String value) {
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 }

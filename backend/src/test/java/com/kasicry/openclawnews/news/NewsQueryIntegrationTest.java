@@ -28,7 +28,7 @@ class NewsQueryIntegrationTest {
     @Test
     void queryFiltersAndSerializesProcessingMetadata() throws Exception {
         NewsArticle article = new NewsArticle(
-                "openai",
+                " OpenAI ",
                 "Codex release",
                 "https://example.com/integration/codex",
                 Instant.parse("2026-06-11T00:00:00Z"),
@@ -40,9 +40,11 @@ class NewsQueryIntegrationTest {
         repository.saveAndFlush(article);
 
         mockMvc.perform(get("/api/news/query")
+                        .param("source", "OPENAI")
                         .param("impact", "high")
                         .param("size", "10"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].source").value("openai"))
                 .andExpect(jsonPath("$.content[0].summary").value("Core summary"))
                 .andExpect(jsonPath("$.content[0].impact").value("HIGH"))
                 .andExpect(jsonPath("$.content[0].collection_status").value("SUMMARIZED"))

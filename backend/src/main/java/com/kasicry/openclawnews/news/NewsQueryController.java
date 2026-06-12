@@ -81,8 +81,9 @@ public class NewsQueryController {
                     builder.like(builder.lower(root.get("title")), pattern));
         }
         if (source != null) {
+            String normalizedSource = source.trim().toLowerCase(Locale.ROOT);
             specification = specification.and((root, query, builder) ->
-                    builder.equal(builder.lower(root.get("source")), source.toLowerCase(Locale.ROOT)));
+                    builder.equal(root.get("source"), normalizedSource));
         }
         if (impact != null) {
             NewsImpact parsedImpact = NewsImpact.valueOf(impact.toUpperCase(Locale.ROOT));
