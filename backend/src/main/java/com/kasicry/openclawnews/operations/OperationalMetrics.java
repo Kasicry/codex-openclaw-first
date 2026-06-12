@@ -74,6 +74,10 @@ public class OperationalMetrics {
         recordDuration("openclaw.briefing.duration", durationNanos);
     }
 
+    public void recordAlertDelivery(String result) {
+        increment("openclaw.alert.deliveries", "result", normalizeResult(result), 1);
+    }
+
     private String collectionResult(WorkerCollectResponse response) {
         for (WorkerCollectResponse.SourceResult source : response.getSources()) {
             if (!"success".equals(normalizeResult(source.getStatus()))) {

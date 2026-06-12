@@ -59,6 +59,8 @@ class OperationalMetricsTest {
         metrics.recordBriefing("success", 3, 2, 1);
         metrics.recordBriefing("skipped", 0, 0, 1);
         metrics.recordBriefing("failure", 0, 0, 1);
+        metrics.recordAlertDelivery("success");
+        metrics.recordAlertDelivery("failure");
 
         assertThat(counter(registry, "openclaw.collection.runs", "result", "failure"))
                 .isEqualTo(1);
@@ -70,6 +72,8 @@ class OperationalMetricsTest {
         assertThat(counter(registry, "openclaw.briefing.articles", "result", "sent"))
                 .isEqualTo(3);
         assertThat(counter(registry, "openclaw.briefing.chunks", "result", "sent")).isEqualTo(2);
+        assertThat(counter(registry, "openclaw.alert.deliveries", "result", "success")).isEqualTo(1);
+        assertThat(counter(registry, "openclaw.alert.deliveries", "result", "failure")).isEqualTo(1);
     }
 
     private WorkerCollectResponse.SourceResult source(String source, String status) {

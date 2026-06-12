@@ -33,6 +33,8 @@ operations:
   schedule-enabled: ${SCHEDULE_ENABLED:false}
   briefing-cron: ${BRIEFING_CRON:0 0 8 * * *}
   briefing-zone: ${BRIEFING_ZONE:Asia/Seoul}
+  alert-webhook-enabled: ${ALERT_WEBHOOK_ENABLED:false}
+  alert-webhook-url: ${ALERT_WEBHOOK_URL:}
 
 telegram:
   bot-token: ${TELEGRAM_BOT_TOKEN:}

@@ -2,6 +2,8 @@ package com.kasicry.openclawnews.briefing;
 
 import com.kasicry.openclawnews.news.NewsArticle;
 import com.kasicry.openclawnews.news.NewsArticleRepository;
+import com.kasicry.openclawnews.operations.AlertNotificationService;
+import com.kasicry.openclawnews.operations.OperationalAlertEvent;
 import com.kasicry.openclawnews.operations.OperationalMetrics;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,20 @@ public class DailyBriefingService {
     private final NewsArticleRepository repository;
     private final TelegramSendService telegramSendService;
     private final OperationalMetrics metrics;
+    private final AlertNotificationService alerts;
     private final ZoneId briefingZone;
 
     public DailyBriefingService(
             NewsArticleRepository repository,
             TelegramSendService telegramSendService,
             OperationalMetrics metrics,
+            AlertNotificationService alerts,
             @Value("${operations.briefing-zone:Asia/Seoul}") String briefingZone
     ) {
         this.repository = repository;
         this.telegramSendService = telegramSendService;
         this.metrics = metrics;
+        this.alerts = alerts;
         this.briefingZone = ZoneId.of(briefingZone);
     }
 
@@ -55,6 +60,7 @@ public class DailyBriefingService {
             return articles.size();
         } catch (RuntimeException exception) {
             metrics.recordBriefing("failure", 0, 0, elapsedSince(startedAt));
+            alerts.notify(OperationalAlertEvent.BRIEFING_FAILURE);
             throw exception;
         }
     }

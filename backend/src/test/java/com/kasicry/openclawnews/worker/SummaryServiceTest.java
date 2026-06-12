@@ -5,6 +5,8 @@ import com.kasicry.openclawnews.news.CollectionStatus;
 import com.kasicry.openclawnews.news.NewsArticle;
 import com.kasicry.openclawnews.news.NewsArticleRepository;
 import com.kasicry.openclawnews.news.NewsImpact;
+import com.kasicry.openclawnews.operations.AlertNotificationService;
+import com.kasicry.openclawnews.operations.OperationalAlertEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -31,6 +34,9 @@ class SummaryServiceTest {
 
     @MockBean
     private WorkerClient workerClient;
+
+    @MockBean
+    private AlertNotificationService alerts;
 
     @Test
     void savesStructuredSummary() {
@@ -70,5 +76,25 @@ class SummaryServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessage("Article content is required for summary");
         verifyNoInteractions(workerClient);
+    }
+
+    @Test
+    void alertsWhenSummaryFails() {
+        NewsArticle article = repository.save(new NewsArticle(
+                "openai",
+                "Codex failure",
+                "https://example.com/codex-failure",
+                Instant.parse("2026-06-11T00:00:00Z"),
+                "Release details"
+        ));
+        when(workerClient.summarize(any(WorkerSummaryRequest.class)))
+                .thenThrow(new IllegalStateException("worker failed"));
+
+        assertThatThrownBy(() -> summaryService.summarize(article.getId()))
+                .isInstanceOf(IllegalStateException.class);
+
+        verify(alerts).notify(OperationalAlertEvent.SUMMARY_FAILURE);
+        assertThat(repository.findById(article.getId()).get().getCollectionStatus())
+                .isEqualTo(CollectionStatus.SUMMARY_FAILED);
     }
 }

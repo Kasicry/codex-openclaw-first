@@ -33,3 +33,5 @@ operations:
   schedule-enabled: false
   briefing-cron: 0 0 8 * * *
   briefing-zone: Asia/Seoul
+  alert-webhook-enabled: false
+  alert-webhook-url:

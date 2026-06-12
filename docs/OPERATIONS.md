@@ -28,9 +28,30 @@ Actuator는 내부망 또는 관리용 Reverse Proxy 뒤에서만 노출한다. 
 | `openclaw.briefing.duration` | 없음 | 일일 브리핑 처리 시간 |
 | `openclaw.briefing.articles` | `result=sent` | 발송 완료 기사 건수 |
 | `openclaw.briefing.chunks` | `result=sent` | 발송 완료 Telegram 청크 수 |
+| `openclaw.alert.deliveries` | `result=success|failure` | 운영 webhook 알림 전송 결과 |
 
 프로세스 재시작 시 현재 Micrometer 메모리 지표는 초기화된다. 장기 추세가 필요해지는
 시점에는 Prometheus 같은 외부 수집기를 연결한다.
+
+## 실패 알림 Webhook
+
+외부 실패 알림은 기본 비활성화되어 있다. 실제 수신 시스템과 전송이 승인된 경우에만
+`ALERT_WEBHOOK_ENABLED=true`와 `ALERT_WEBHOOK_URL`을 함께 설정한다. 설정 변경과
+실제 webhook 호출은 [SECURITY.md](./SECURITY.md)에 따라 사전 승인이 필요하다.
+
+전송 이벤트는 다음 고정 목록으로 제한한다.
+
+| 이벤트 | 심각도 | 발생 조건 |
+|---|---|---|
+| `collection.partial` | warning | 한 개 이상의 사이트 수집 결과가 성공이 아님 |
+| `collection.failure` | warning | 전체 수집 또는 저장 경로 실패 |
+| `summary.failure` | warning | 기사 요약 또는 요약 저장 실패 |
+| `briefing.failure` | critical | 브리핑 생성·발송·상태 저장 실패 |
+
+Payload에는 `schema_version`, `severity`, `component`, `event`, `occurred_at`만 포함한다.
+기사 제목, URL, 본문, 오류 원문, 토큰은 포함하지 않는다. Webhook 전송이나 알림 지표
+기록이 실패해도 원래 작업 결과와 예외는 변경하지 않는다. Webhook 클라이언트는 연결
+및 응답 대기를 각각 5초로 제한하며 자동 재시도하지 않는다.
 
 ## 초기 경보 기준
 

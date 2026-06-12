@@ -1,12 +1,15 @@
 package com.kasicry.openclawnews.worker;
 
-import com.kasicry.openclawnews.config.HttpClientConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
@@ -18,7 +21,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
         value = WorkerClient.class,
         properties = "worker.base-url=http://worker.test"
 )
-@Import(HttpClientConfig.class)
+@Import(WorkerClientTest.ClientTestConfiguration.class)
 class WorkerClientTest {
 
     @Autowired
@@ -26,6 +29,15 @@ class WorkerClientTest {
 
     @Autowired
     private MockRestServiceServer server;
+
+    @TestConfiguration
+    static class ClientTestConfiguration {
+
+        @Bean
+        RestTemplate restTemplate(RestTemplateBuilder builder) {
+            return builder.build();
+        }
+    }
 
     @Test
     void mapsPythonSnakeCaseResponseToJavaDto() {

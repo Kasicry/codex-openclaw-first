@@ -3,6 +3,8 @@ package com.kasicry.openclawnews.briefing;
 import com.kasicry.openclawnews.news.NewsArticle;
 import com.kasicry.openclawnews.news.NewsArticleRepository;
 import com.kasicry.openclawnews.operations.OperationalMetrics;
+import com.kasicry.openclawnews.operations.AlertNotificationService;
+import com.kasicry.openclawnews.operations.OperationalAlertEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -24,6 +26,7 @@ class DailyBriefingServiceTest {
         NewsArticleRepository repository = mock(NewsArticleRepository.class);
         TelegramSendService telegramSendService = mock(TelegramSendService.class);
         OperationalMetrics metrics = mock(OperationalMetrics.class);
+        AlertNotificationService alerts = mock(AlertNotificationService.class);
         NewsArticle article = new NewsArticle(
                 "openai",
                 "Codex release",
@@ -41,6 +44,7 @@ class DailyBriefingServiceTest {
                 repository,
                 telegramSendService,
                 metrics,
+                alerts,
                 "Asia/Seoul"
         );
         int sentCount = service.sendToday();
@@ -62,6 +66,7 @@ class DailyBriefingServiceTest {
         NewsArticleRepository repository = mock(NewsArticleRepository.class);
         TelegramSendService telegramSendService = mock(TelegramSendService.class);
         OperationalMetrics metrics = mock(OperationalMetrics.class);
+        AlertNotificationService alerts = mock(AlertNotificationService.class);
         when(repository.findByPublishedAtBetweenAndNotificationSentFalseOrderByPublishedAtDesc(
                 any(Instant.class),
                 any(Instant.class)
@@ -71,6 +76,7 @@ class DailyBriefingServiceTest {
                 repository,
                 telegramSendService,
                 metrics,
+                alerts,
                 "Asia/Seoul"
         );
 
@@ -89,6 +95,7 @@ class DailyBriefingServiceTest {
         NewsArticleRepository repository = mock(NewsArticleRepository.class);
         TelegramSendService telegramSendService = mock(TelegramSendService.class);
         OperationalMetrics metrics = mock(OperationalMetrics.class);
+        AlertNotificationService alerts = mock(AlertNotificationService.class);
         NewsArticle article = new NewsArticle(
                 "openai",
                 "Codex release",
@@ -108,6 +115,7 @@ class DailyBriefingServiceTest {
                 repository,
                 telegramSendService,
                 metrics,
+                alerts,
                 "Asia/Seoul"
         );
 
@@ -121,6 +129,7 @@ class DailyBriefingServiceTest {
                 org.mockito.ArgumentMatchers.eq(0),
                 anyLong()
         );
+        verify(alerts).notify(OperationalAlertEvent.BRIEFING_FAILURE);
     }
 
     @Test
@@ -128,6 +137,7 @@ class DailyBriefingServiceTest {
         NewsArticleRepository repository = mock(NewsArticleRepository.class);
         TelegramSendService telegramSendService = mock(TelegramSendService.class);
         OperationalMetrics metrics = mock(OperationalMetrics.class);
+        AlertNotificationService alerts = mock(AlertNotificationService.class);
         NewsArticle article = new NewsArticle(
                 "openai",
                 "Codex release",
@@ -143,6 +153,7 @@ class DailyBriefingServiceTest {
                 repository,
                 telegramSendService,
                 metrics,
+                alerts,
                 "Asia/Seoul"
         );
 
