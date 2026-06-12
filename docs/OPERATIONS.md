@@ -150,3 +150,23 @@ psql -X -v ON_ERROR_STOP=1 -f scripts/explain-news-queries.sql
   넘을 때만 승인 후 `pg_trgm` 또는 별도 검색 저장소를 검토한다.
 - V3 migration은 출처·중요도·미발송 여부와 최신 발행일 정렬을 결합한 복합
   인덱스를 추가한다. 기존 단일 인덱스 제거는 실데이터 실행 계획 확인 전 보류한다.
+
+## 품질·성능 추세 스냅샷
+
+`scripts/operational-trend-snapshot.ps1`은 PostgreSQL 집계와 로컬 Backend 읽기 API의
+p50·p95를 JSON으로 출력한다. DB 트랜잭션은 읽기 전용이며 Backend URL은
+`localhost`, `127.0.0.1`, `::1`만 허용한다.
+
+```powershell
+$env:POSTGRES_PASSWORD='local-only-password'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\operational-trend-snapshot.ps1
+```
+
+- 출력에는 기사 수, 처리 상태, 요약 성공률, 알림 상태, 고정 출처·중요도별 건수,
+  다중 출처 기사 수, DB 크기, Flyway 버전, 인덱스 스캔 합계가 포함된다.
+- API 측정은 최신·오늘·페이지 조회를 기본 20회 실행한다. 읽기 API 보호가 활성화된
+  환경에서는 `READ_API_KEY` 환경 변수를 사용한다.
+- 출력에는 기사 제목, URL, 본문, 오류 원문, 비밀정보가 포함되지 않는다.
+- 반복 실행 결과는 외부 추세 저장소가 승인되기 전까지 표준 출력으로만 제공한다.
+- 기사 수가 0건인 기준선은 측정 경로 검증에만 사용하며 실데이터 품질·성능 추세
+  완료로 간주하지 않는다.

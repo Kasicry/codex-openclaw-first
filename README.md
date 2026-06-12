@@ -46,6 +46,13 @@ $env:POSTGRES_PASSWORD='local-only-password'
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\postgres-restore-drill.ps1
 ```
 
+읽기 전용 운영 품질·성능 스냅샷:
+
+```powershell
+$env:POSTGRES_PASSWORD='local-only-password'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\operational-trend-snapshot.ps1
+```
+
 Local endpoints:
 
 - Backend health: `http://localhost:13510/actuator/health`
